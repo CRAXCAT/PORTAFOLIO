@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Portfolio</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="auth-body">
+
+<div class="noise"></div>
+<div class="bg-grid"></div>
+
+<a href="index.html" class="auth-back">← Volver al Portfolio</a>
+
+<div class="auth-center">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="logo-dot"></span>
+      Portfolio
+    </div>
+    <h2 class="auth-title">Área de acceso</h2>
+    <p class="auth-sub">Solo administradores</p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="login">Iniciar sesión</button>
+      <button class="tab" data-tab="register">Registrarse</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="tab-pane active" id="pane-login">
+      <div class="field">
+        <label>Correo</label>
+        <input type="email" id="l-email" placeholder="correo@ejemplo.com"/>
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="l-pass" placeholder="••••••••"/>
+      </div>
+      <div class="msg error" id="l-err" style="display:none"></div>
+      <button class="btn-primary full" id="btn-login">Entrar →</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="tab-pane" id="pane-register">
+      <div class="field">
+        <label>Nombre completo</label>
+        <input type="text" id="r-name" placeholder="Tu nombre"/>
+      </div>
+      <div class="field">
+        <label>Correo</label>
+        <input type="email" id="r-email" placeholder="correo@ejemplo.com"/>
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="r-pass" placeholder="Mín. 6 caracteres"/>
+      </div>
+      <div class="msg error" id="r-err" style="display:none"></div>
+      <div class="msg success" id="r-ok" style="display:none"></div>
+      <button class="btn-primary full" id="btn-register">Crear cuenta</button>
+      <p class="note">Las cuentas nuevas tienen rol <strong>user</strong>.<br/>El admin asigna roles desde el panel.</p>
+    </div>
+  </div>
+</div>
+
+<script src="js/supabase-config.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

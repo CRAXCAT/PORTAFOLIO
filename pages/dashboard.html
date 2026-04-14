@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Portfolio</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="dash-body">
+
+<div class="noise"></div>
+<div class="side-overlay" id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo"><span class="logo-dot"></span>Portfolio</div>
+
+  <div class="sb-user" id="sb-user">
+    <div class="sb-avatar" id="sb-avatar">?</div>
+    <div>
+      <div class="sb-name" id="sb-name">...</div>
+      <div class="sb-role" id="sb-role">user</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <a href="../index.html" class="sb-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Ver Portfolio
+    </a>
+    <a href="#" class="sb-link active" data-v="units">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Unidades
+    </a>
+    <a href="#" class="sb-link admin-item" data-v="manage" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Gestionar
+    </a>
+    <a href="#" class="sb-link admin-item" data-v="users" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Usuarios
+    </a>
+  </nav>
+
+  <button class="sb-logout" id="btn-logout">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Cerrar sesión
+  </button>
+</aside>
+
+<!-- MAIN -->
+<div class="dash-main">
+  <header class="dash-top">
+    <button class="menu-btn" id="menu-btn">☰</button>
+    <h1 class="dash-page-title" id="dash-title">Unidades</h1>
+    <span class="badge-live">● Activo</span>
+  </header>
+
+  <!-- VIEW: UNITS (read) -->
+  <div class="dview active" id="dv-units">
+    <div class="units-grid" id="d-units-grid">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- VIEW: WEEKS (read) -->
+  <div class="dview" id="dv-weeks">
+    <div class="crumb">
+      <button class="btn-back" id="d-back-units">← Unidades</button>
+      <span id="d-unit-crumb"></span>
+    </div>
+    <div class="weeks-grid" id="d-weeks-grid">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- VIEW: WEEK DETAIL (read) -->
+  <div class="dview" id="dv-detail">
+    <div class="crumb">
+      <button class="btn-back" id="d-back-weeks">← Semanas</button>
+      <span id="d-week-crumb"></span>
+    </div>
+    <div class="detail-wrap" id="d-detail-wrap"></div>
+  </div>
+
+  <!-- VIEW: MANAGE (admin) -->
+  <div class="dview" id="dv-manage">
+    <div class="admin-section">
+      <h3 class="admin-section-title">➕ Nueva Unidad</h3>
+      <div class="form-grid">
+        <div class="field"><label>Número</label><input type="number" id="u-num" placeholder="1" min="1"/></div>
+        <div class="field"><label>Nombre</label><input type="text" id="u-name" placeholder="Unidad 1 — Fundamentos"/></div>
+        <div class="field"><label>Descripción</label><input type="text" id="u-desc" placeholder="Descripción breve"/></div>
+      </div>
+      <button class="btn-primary" id="btn-add-unit">Crear Unidad</button>
+      <div class="msg" id="u-msg" style="display:none"></div>
+    </div>
+
+    <div class="admin-section">
+      <h3 class="admin-section-title">📅 Nueva Semana</h3>
+      <div class="form-grid">
+        <div class="field"><label>Unidad</label>
+          <select id="w-unit"><option value="">Selecciona...</option></select>
+        </div>
+        <div class="field"><label>N° Semana</label><input type="number" id="w-num" placeholder="1" min="1"/></div>
+        <div class="field"><label>Título</label><input type="text" id="w-title" placeholder="Título de la semana"/></div>
+      </div>
+      <div class="field"><label>Descripción / Contenido</label>
+        <textarea id="w-desc" rows="4" placeholder="Describe el contenido..."></textarea>
+      </div>
+      <div class="field"><label>Imagen de portada</label>
+        <input type="file" id="w-img" accept="image/*" class="file-input"/>
+        <div id="img-prev" class="img-prev"></div>
+      </div>
+      <div class="field"><label>Archivos (PDF, Word, PPT…)</label>
+        <input type="file" id="w-files" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.xlsx,.xls" class="file-input"/>
+        <div id="files-tags" class="files-tags"></div>
+      </div>
+      <button class="btn-primary" id="btn-add-week"><span>Publicar Semana</span></button>
+      <div class="progress-wrap" id="prog-wrap" style="display:none">
+        <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+        <span id="prog-text">Subiendo...</span>
+      </div>
+      <div class="msg" id="w-msg" style="display:none"></div>
+    </div>
+
+    <div class="admin-section">
+      <h3 class="admin-section-title">📋 Contenido publicado</h3>
+      <div id="content-list"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <!-- VIEW: USERS (admin) -->
+  <div class="dview" id="dv-users">
+    <div class="admin-section">
+      <h3 class="admin-section-title">👥 Usuarios registrados</h3>
+      <div id="users-wrap"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/supabase-config.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+</html>
