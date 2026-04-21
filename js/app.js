@@ -128,7 +128,7 @@ async function loadUnitContent(unit) {
                 </div>
                 <div class="file-actions">
                   ${previewBtn}
-                  <a href="${f.file_url}" download="${esc(f.file_name)}" target="_blank" class="btn-dl">
+                  <a href="#" onclick="forceDownload(event, '${f.file_url}', '${esc(f.file_name)}')" class="btn-dl">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                       <polyline points="7 10 12 15 17 10"/>
@@ -204,4 +204,23 @@ function fileExt(name) { return name?.split('.').pop()?.toUpperCase() || 'FILE';
 function fileIcon(name) {
   const ext = name?.split('.').pop()?.toLowerCase();
   return {pdf:'📄',doc:'📝',docx:'📝',ppt:'📊',pptx:'📊',xls:'📈',xlsx:'📈',zip:'🗜️',txt:'📃',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',mp4:'🎬',mp3:'🎵'}[ext] || '📎';
+}
+
+// ── FORZAR DESCARGA (evita que el navegador abra el archivo) ──
+async function forceDownload(e, url, filename) {
+  e.preventDefault();
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch(err) {
+    // Fallback: abrir en nueva pestaña
+    window.open(url, '_blank');
+  }
 }
